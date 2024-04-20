@@ -1,14 +1,14 @@
-import {ViteDevServer} from "vite";
+import { ViteDevServer } from "vite";
+import * as gb from "globby";
 
 export type IMIME = Record<string, string>;
 
-export interface IConfig {
-    mimeTypes?: IMIME;
-    ssr?: boolean;
-}
-
-export interface IParameterViteServe {
-    server: ViteDevServer;
-    assets: string[];
-    options: IConfig
-}
+export type Option = {
+  src: fg.Pattern | fg.Pattern[];
+  // 相对 vite build.outDir
+  dest?: string;
+  noBuildCopy?: boolean;
+  globbyOption?: gb.Options;
+  mimeTypes?: IMIME;
+  ssr?: boolean;
+};

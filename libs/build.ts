@@ -1,25 +1,34 @@
-import fs from "fs";
-import {NormalizedOutputOptions} from "rollup";
+import fs from "fs-extra";
+import { NormalizedOutputOptions } from "rollup";
+import { Option } from "./types";
+import * as gb from "globby";
+import path from "path";
 
-function copyRecursively(src: string, dst: string) {
-    if (fs.statSync(src).isDirectory()) {
-        // folder
-        if (!fs.existsSync(dst)) {
-            fs.mkdirSync(dst);
-        }
-        for (const file of fs.readdirSync(src)) {
-            copyRecursively(src + "/" + file, dst + "/" + file);
-        }
-    } else {
-        // file
-        fs.copyFileSync(src, dst);
-    }
-}
+export async function buildMiddleWare(
+  viteOptions: NormalizedOutputOptions,
+  options: Option[]
+) {
+  if (!viteOptions.dir) throw new Error("options.dir is undefined");
 
-export function buildMiddleWare(options: NormalizedOutputOptions, assets: string[] = []) {
-    const dst = options.dir;
-    if (!dst) throw new Error("options.dir is undefined");
-    for (const dir of assets) {
-        copyRecursively(dir, dst)
+  const cwd = process.cwd();
+
+  for (const option of options) {
+    if (option.noBuildCopy) continue;
+    const matchedPaths = await gb.globby(option.src, {
+      expandDirectories: false,
+      onlyFiles: false,
+      ...option.globbyOption,
+    });
+
+    for (const matchedPath of matchedPaths) {
+      fs.copySync(
+        path.join(cwd, matchedPath),
+        path.join(
+          viteOptions.dir,
+          option.dest || "",
+          path.parse(matchedPath).base
+        )
+      );
     }
+  }
 }
