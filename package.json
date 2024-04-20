@@ -1,6 +1,6 @@
 {
   "name": "vite-multiple-assets",
-  "version": "1.2.10",
+  "version": "2.0.0",
   "description": "Multiple assets public directory for vite",
   "author": "Van nguyen ba tran",
   "license": "MIT",
@@ -56,6 +56,8 @@
   },
   "peerDependencies": {
     "mime-types": "^2.1.35",
-    "vite": ">=2.9.6"
+    "vite": ">=2.9.6",
+    "globby": ">=12",
+    "fs-extra": ">=8"
   }
 }

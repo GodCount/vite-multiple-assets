@@ -1,12 +1,12 @@
-"use strict";Object.defineProperty(exports, "__esModule", {value: true}); function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { default: obj }; }
+"use strict";Object.defineProperty(exports, "__esModule", {value: true}); function _interopRequireWildcard(obj) { if (obj && obj.__esModule) { return obj; } else { var newObj = {}; if (obj != null) { for (var key in obj) { if (Object.prototype.hasOwnProperty.call(obj, key)) { newObj[key] = obj[key]; } } } newObj.default = obj; return newObj; } } function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { default: obj }; }
 
 
-
-var _chunkPYN5DZXKcjs = require('./chunk-PYN5DZXK.cjs');
+var _chunkHZ6LTHYMcjs = require('./chunk-HZ6LTHYM.cjs');
 
 // libs/server.ts
 var _fs = require('fs'); var _fs2 = _interopRequireDefault(_fs);
 var _mimetypes = require('mime-types'); var _mimetypes2 = _interopRequireDefault(_mimetypes);
+var _globby = require('globby'); var gb = _interopRequireWildcard(_globby);
 var _path = require('path'); var _path2 = _interopRequireDefault(_path);
 var mimeTypes = {
   ".html": "text/html",
@@ -56,7 +56,7 @@ async function ServerMiddleWare(server, options) {
   const optionInfo = [];
   const cwd = process.cwd();
   for (const option of options) {
-    const matchedPaths = await _chunkPYN5DZXKcjs.globby.call(void 0, option.src, _chunkPYN5DZXKcjs.__spreadProps.call(void 0, _chunkPYN5DZXKcjs.__spreadValues.call(void 0, {
+    const matchedPaths = await gb.globby(option.src, _chunkHZ6LTHYMcjs.__spreadProps.call(void 0, _chunkHZ6LTHYMcjs.__spreadValues.call(void 0, {
       expandDirectories: false,
       onlyFiles: false
     }, option.globbyOption), {
@@ -71,20 +71,17 @@ async function ServerMiddleWare(server, options) {
         dir: file.dirent.isDirectory()
       };
     });
-    console.log("files", files);
-    optionInfo.push(_chunkPYN5DZXKcjs.__spreadProps.call(void 0, _chunkPYN5DZXKcjs.__spreadValues.call(void 0, {}, option), {
+    optionInfo.push(_chunkHZ6LTHYMcjs.__spreadProps.call(void 0, _chunkHZ6LTHYMcjs.__spreadValues.call(void 0, {}, option), {
       files
     }));
   }
   return () => {
     server.middlewares.use(async (req, res, next) => {
       const relativePath = toFilePath(req.originalUrl);
-      console.log("relativePath", relativePath);
       for (const info of optionInfo) {
         const file = info.files.find(
           (item) => relativePath.indexOf(item.dest) != -1
         );
-        console.log("file", file);
         if (file) {
           let filepath = file.src;
           if (file.dir) {
@@ -93,7 +90,7 @@ async function ServerMiddleWare(server, options) {
               continue;
           }
           const extension = filepath.substring(filepath.lastIndexOf("."));
-          const contentType = _chunkPYN5DZXKcjs.__spreadValues.call(void 0, _chunkPYN5DZXKcjs.__spreadValues.call(void 0, {}, info.mimeTypes), mimeTypes)[extension] || getContentType(filepath);
+          const contentType = _chunkHZ6LTHYMcjs.__spreadValues.call(void 0, _chunkHZ6LTHYMcjs.__spreadValues.call(void 0, {}, info.mimeTypes), mimeTypes)[extension] || getContentType(filepath);
           if (info.ssr) {
             res.addListener("pipe", () => {
               handleWriteToServe(res, contentType, filepath);

@@ -94,7 +94,6 @@ export async function ServerMiddleWare(
       };
     });
 
-    console.log("files", files);
 
     optionInfo.push({
       ...option,
@@ -105,14 +104,11 @@ export async function ServerMiddleWare(
   return () => {
     server.middlewares.use(async (req, res, next) => {
       const relativePath = toFilePath(req.originalUrl);
-      console.log("relativePath", relativePath);
 
       for (const info of optionInfo) {
         const file = info.files.find(
           (item) => relativePath.indexOf(item.dest) != -1
         );
-
-        console.log("file", file);
 
         if (file) {
           let filepath = file.src;

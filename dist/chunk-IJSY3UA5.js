@@ -1,12 +1,12 @@
 import {
   __spreadProps,
-  __spreadValues,
-  globby
-} from "./chunk-IYHLREDX.js";
+  __spreadValues
+} from "./chunk-KLNSLHAC.js";
 
 // libs/server.ts
 import fs from "fs";
 import mime from "mime-types";
+import * as gb from "globby";
 import path from "path";
 var mimeTypes = {
   ".html": "text/html",
@@ -56,7 +56,7 @@ async function ServerMiddleWare(server, options) {
   const optionInfo = [];
   const cwd = process.cwd();
   for (const option of options) {
-    const matchedPaths = await globby(option.src, __spreadProps(__spreadValues({
+    const matchedPaths = await gb.globby(option.src, __spreadProps(__spreadValues({
       expandDirectories: false,
       onlyFiles: false
     }, option.globbyOption), {
@@ -71,7 +71,6 @@ async function ServerMiddleWare(server, options) {
         dir: file.dirent.isDirectory()
       };
     });
-    console.log("files", files);
     optionInfo.push(__spreadProps(__spreadValues({}, option), {
       files
     }));
@@ -79,12 +78,10 @@ async function ServerMiddleWare(server, options) {
   return () => {
     server.middlewares.use(async (req, res, next) => {
       const relativePath = toFilePath(req.originalUrl);
-      console.log("relativePath", relativePath);
       for (const info of optionInfo) {
         const file = info.files.find(
           (item) => relativePath.indexOf(item.dest) != -1
         );
-        console.log("file", file);
         if (file) {
           let filepath = file.src;
           if (file.dir) {
