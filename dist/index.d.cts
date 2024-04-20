@@ -1,4 +1,4 @@
-import { Option } from './types.d.js';
+import { Option } from './types.d.cjs';
 import 'globby';
 
 declare function DynamicPublicDirectory(options: Option[]): any;

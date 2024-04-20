@@ -1,9 +1,8 @@
-import { ViteDevServer } from "vite";
-import { Options } from "globby";
+import { Options } from 'globby';
 
-export type IMIME = Record<string, string>;
+type IMIME = Record<string, string>;
 
-export type Option = {
+type Option = {
   src: string | string[];
   // 相对 vite build.outDir
   dest?: string;
@@ -12,3 +11,5 @@ export type Option = {
   mimeTypes?: IMIME;
   ssr?: boolean;
 };
+
+export type { IMIME, Option };
